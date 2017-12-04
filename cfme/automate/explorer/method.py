@@ -209,9 +209,10 @@ class MethodEditView(AutomateExplorerView):
 
 
 class Method(BaseEntity, Copiable):
-    ICON_NAME = VersionPick({
-        Version.lowest(): 'product-method',
-        '5.9': 'fa-ruby',
+
+    ICON_NAME_MAP = VersionPick({
+        Version.lowest(): {'inline': 'product-method'},
+        '5.9': {'inline': 'fa-ruby', 'playbook': 'vendor-ansible'}
     })
 
     def __init__(self, collection, name=None, display_name=None, location='inline', script=None,
@@ -274,11 +275,12 @@ class Method(BaseEntity, Copiable):
 
     @property
     def tree_path(self):
+        icon_name = self.ICON_NAME_MAP[self.location]
         if self.display_name:
             return self.parent_obj.tree_path + [
-                (self.ICON_NAME, '{} ({})'.format(self.display_name, self.name))]
+                (icon_name, '{} ({})'.format(self.display_name, self.name))]
         else:
-            return self.parent_obj.tree_path + [(self.ICON_NAME, self.name)]
+            return self.parent_obj.tree_path + [(icon_name, self.name)]
 
     @property
     def tree_path_name_only(self):
